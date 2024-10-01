@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
 			<body className="antialiased">
-				<ToastContainer theme="dark" />
+				<ToastContainer theme="light" />
 				<main className="min-h-[calc(100vh-5rem)]">{children}</main>
 			</body>
 		</html>

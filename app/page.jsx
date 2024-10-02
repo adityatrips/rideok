@@ -117,6 +117,7 @@ const IndexPage = () => {
 							<SelectItem value="suv">SUV</SelectItem>
 							<SelectItem value="truck">Truck</SelectItem>
 							<SelectItem value="van">Van</SelectItem>
+							<SelectItem value="hatchback">Hatchback</SelectItem>
 						</SelectContent>
 					</Select>
 					<Select
@@ -128,7 +129,7 @@ const IndexPage = () => {
 							<SelectValue placeholder="Weather" />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="sunny">Sedan</SelectItem>
+							<SelectItem value="sunny">Sunny</SelectItem>
 							<SelectItem value="rainy">Rainy</SelectItem>
 							<SelectItem value="cloudy">Cloudy</SelectItem>
 							<SelectItem value="snowy">Snowy</SelectItem>

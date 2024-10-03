@@ -71,3 +71,47 @@ export const POST = async (req) => {
 		);
 	}
 };
+
+export const GET = async (req) => {
+	connectToDb();
+
+	const accessId = req.nextUrl.searchParams.get("accessId");
+
+	console.log(`Access ID: ${accessId}`);
+	console.log(`Actual ID: ${process.env.ACCESS_KEY}`);
+
+	if (accessId !== process.env.ACCESS_KEY) {
+		return Response.json({ message: "Unauthorized access." }, { status: 401 });
+	}
+
+	try {
+		const fareCalculations = await FareCalculation.find();
+
+		return Response.json(fareCalculations, { status: 200 });
+	} catch (error) {
+		return Response.json(
+			{ message: error ?? "Error fetching fare calculations." },
+			{ status: 500 }
+		);
+	}
+};
+
+export const DELETE = async (req) => {
+	connectToDb();
+
+	const id = req.nextUrl.searchParams.get("id");
+
+	try {
+		await FareCalculation.findByIdAndDelete(id);
+
+		return Response.json(
+			{ message: "Fare calculation deleted successfully!" },
+			{ status: 200 }
+		);
+	} catch (error) {
+		return Response.json(
+			{ message: error ?? "Error deleting fare calculation." },
+			{ status: 500 }
+		);
+	}
+};

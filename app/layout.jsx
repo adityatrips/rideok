@@ -1,6 +1,7 @@
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 export const metadata = {
 	title: "RideOk - A ride sharing app",
@@ -28,8 +29,10 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
 			<body className="antialiased">
-				<ToastContainer theme="light" />
-				<main className="min-h-[calc(100vh-5rem)]">{children}</main>
+				<ToastContainer theme="dark" />
+				<TooltipProvider>
+					<main className="min-h-[calc(100vh-5rem)]">{children}</main>
+				</TooltipProvider>
 			</body>
 		</html>
 	);

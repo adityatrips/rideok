@@ -38,6 +38,12 @@ import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Image from "next/image";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const IndexPage = () => {
 	const [carType, setCarType] = React.useState("");
@@ -47,6 +53,8 @@ const IndexPage = () => {
 	const [carAverage, setCarAverage] = React.useState("");
 	const [numPassengers, setNumPassengers] = React.useState("");
 	const [feedback, setFeedback] = React.useState("");
+
+	const [loading, setLoading] = React.useState(false);
 
 	const [fareResultModal, setFareResultModal] = React.useState(false);
 	const [fareResult, setFareResult] = React.useState(null);
@@ -58,6 +66,7 @@ const IndexPage = () => {
 		console.log("Distance       : ", distance);
 		console.log("CarAverage     : ", carAverage);
 		console.log("NumPassengers  : ", numPassengers);
+		setLoading(true);
 
 		try {
 			const response = await axios.post("/api/fare", {
@@ -72,6 +81,8 @@ const IndexPage = () => {
 		} catch (error) {
 			console.error(error);
 			setFareResultModal(false);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -179,8 +190,9 @@ const IndexPage = () => {
 							<Button
 								className="w-full"
 								onClick={handleCalculateFare}
+								disabled={loading}
 							>
-								Calculate Fare
+								{loading ? "Loading..." : "Calculate Fare"}
 							</Button>
 						</DialogTrigger>
 						{fareResult && (
@@ -191,12 +203,62 @@ const IndexPage = () => {
 									</DialogTitle>
 								</DialogHeader>
 								<Table>
-									<TableCaption>Fare calculation results</TableCaption>
+									<TableCaption className="text-red-400">
+										This application is based on parameters provided only. It
+										ensure car owners to pay less for doing the effort of
+										driving the car.
+									</TableCaption>
 									<TableHeader>
-										<TableHead>TotalFare</TableHead>
-										<TableHead>Driver Fare</TableHead>
-										<TableHead>Passenger Fare</TableHead>
-										<TableHead>Driver Payout</TableHead>
+										<TableHead>
+											<span className="flex gap-1 items-center">
+												Total Fare
+												<Tooltip>
+													<TooltipTrigger>
+														<InfoCircledIcon />
+													</TooltipTrigger>
+													<TooltipContent>Total Fare</TooltipContent>
+												</Tooltip>
+											</span>
+										</TableHead>
+										<TableHead>
+											<span className="flex gap-1 items-center">
+												Driver Fare
+												<Tooltip>
+													<TooltipTrigger>
+														<InfoCircledIcon />
+													</TooltipTrigger>
+													<TooltipContent>
+														Amount shared by car owner
+													</TooltipContent>
+												</Tooltip>
+											</span>
+										</TableHead>
+										<TableHead>
+											<span className="flex gap-1 items-center">
+												Passenger Fare
+												<Tooltip>
+													<TooltipTrigger>
+														<InfoCircledIcon />
+													</TooltipTrigger>
+													<TooltipContent>
+														Rate for each passenger
+													</TooltipContent>
+												</Tooltip>
+											</span>
+										</TableHead>
+										<TableHead>
+											<span className="flex gap-1 items-center">
+												Driver Payout
+												<Tooltip>
+													<TooltipTrigger>
+														<InfoCircledIcon />
+													</TooltipTrigger>
+													<TooltipContent>
+														Total amount received by car owner
+													</TooltipContent>
+												</Tooltip>
+											</span>
+										</TableHead>
 									</TableHeader>
 									<TableBody>
 										<TableRow>

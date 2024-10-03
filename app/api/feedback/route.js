@@ -7,19 +7,19 @@ export const POST = async (req) => {
 
 	const { feedback } = await req.json();
 
-	// try {
-	const newFeedback = new Feedback({ feedback });
-	await newFeedback.save();
+	try {
+		const newFeedback = new Feedback({ feedback });
+		await newFeedback.save();
 
-	return Response.json(
-		{ message: "Feedback submitted successfully!" },
-		{ status: 201 }
-	);
-	// } catch (error) {
-	// 	console.error(error);
-	// 	return Response.json(
-	// 		{ message: "Error submitting feedback." },
-	// 		{ status: 500 }
-	// 	);
-	// }
+		return Response.json(
+			{ message: "Feedback submitted successfully!" },
+			{ status: 201 }
+		);
+	} catch (error) {
+		console.error(error);
+		return Response.json(
+			{ message: "Error submitting feedback." },
+			{ status: 500 }
+		);
+	}
 };

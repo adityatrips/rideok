@@ -55,6 +55,7 @@ const IndexPage = () => {
 	const [feedback, setFeedback] = React.useState("");
 
 	const [loading, setLoading] = React.useState(false);
+	const [feedbackLoading, setFeedbackLoading] = React.useState(false);
 
 	const [fareResultModal, setFareResultModal] = React.useState(false);
 	const [fareResult, setFareResult] = React.useState(null);
@@ -67,6 +68,19 @@ const IndexPage = () => {
 		console.log("CarAverage     : ", carAverage);
 		console.log("NumPassengers  : ", numPassengers);
 		setLoading(true);
+
+		if (
+			!carType ||
+			!weather ||
+			!roadType ||
+			!distance ||
+			!carAverage ||
+			!numPassengers
+		) {
+			toast.error("Please fill all the fields");
+			setLoading(false);
+			return;
+		}
 
 		try {
 			const response = await axios.post("/api/fare", {
@@ -88,15 +102,19 @@ const IndexPage = () => {
 
 	const handleFeedback = async () => {
 		console.log("Feedback       : ", feedback);
+		setFeedbackLoading(true);
 
 		try {
 			await axios.post("/api/feedback", {
 				feedback,
 			});
-			toast("Feedback submitted successfully");
+			toast.success("Feedback submitted successfully");
 		} catch (error) {
-			toast("Failed to submit feedback");
+			toast.error("Failed to submit feedback");
 			console.error(error);
+		} finally {
+			setFeedback("");
+			setFeedbackLoading(false);
 		}
 	};
 
@@ -307,8 +325,9 @@ const IndexPage = () => {
 								<Button
 									onClick={handleFeedback}
 									className="w-full"
+									disabled={feedbackLoading}
 								>
-									Submit Feedback
+									{feedbackLoading ? "Submitting..." : "Submit Feedback"}
 								</Button>
 							</DialogFooter>
 						</DialogContent>

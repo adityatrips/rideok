@@ -3,7 +3,6 @@
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
@@ -15,20 +14,21 @@ import moment from "moment";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { SelectSeparator } from "@/components/ui/select";
 
-const FeedbacksPage = () => {
+const FareCalculationsPage = () => {
 	const { id } = useParams();
 
-	const [feedbacks, setFeedbacks] = useState([]);
+	const [fareCalculations, setFareCalculations] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [unauthorized, setUnauthorized] = useState(false);
 
-	const fetchAllFeedbacks = async () => {
+	const fetchAllFareCalculations = async () => {
 		setLoading(true);
 		try {
-			const response = await axios.get(`/api/feedback?accessId=${id}`);
+			const response = await axios.get(`/api/fare?accessId=${id}`);
 
-			setFeedbacks(response.data);
+			setFareCalculations(response.data);
 			setLoading(false);
 		} catch (error) {
 			if (error.status === 401) {
@@ -40,12 +40,12 @@ const FeedbacksPage = () => {
 	};
 
 	useEffect(() => {
-		fetchAllFeedbacks();
+		fetchAllFareCalculations();
 	}, [id]);
 
 	const deleteFeedback = async (id) => {
-		await axios.delete(`/api/feedback?id=${id}`);
-		fetchAllFeedbacks();
+		await axios.delete(`/api/fare?id=${id}`);
+		fetchAllFareCalculations();
 	};
 
 	if (loading) {
@@ -67,10 +67,10 @@ const FeedbacksPage = () => {
 				</Link>
 			</section>
 		);
-	} else if (feedbacks.length === 0) {
+	} else if (fareCalculations.length === 0) {
 		return (
 			<section className="h-screen w-screen flex flex-col items-center justify-center">
-				<span>No feedbacks found, check again later.</span>
+				<span>No fare calculations found, check again later.</span>
 
 				<Link
 					className="text-blue-600"
@@ -83,21 +83,31 @@ const FeedbacksPage = () => {
 	} else {
 		return (
 			<section className="container mx-auto p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-				{feedbacks?.map((feedback, i) => {
+				{fareCalculations?.map((fare, i) => {
 					return (
 						<Card key={i}>
 							<CardHeader>
-								<CardTitle>{feedback._id}</CardTitle>
+								<CardTitle className="flex flex-col">
+									{fare._id}
+									{moment(fare.createdAt).format("LLLL")}
+								</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<CardDescription>
-									{moment(feedback.createdAt).format("LLLL")}
-								</CardDescription>
-								<p>{feedback.feedback}</p>
+								<div className="flex flex-col">
+									<span>Distance: {fare.distance.toFixed(2)}</span>
+									<span>Car Mileage: {fare.carAverage.toFixed(2)}</span>
+									<span>Number of passengers: {fare.numPassengers}</span>
+									<span>Fuel Price: {fare.fuelPrice.toFixed(2)}</span>
+									<span>Base Fare: {fare.baseFare.toFixed(2)}</span>
+									<span>Total Fare: {fare.totalFare.toFixed(2)}</span>
+									<span>Driver Fare: {fare.driverFare.toFixed(2)}</span>
+									<span>Passenger Fare: {fare.passengerFare.toFixed(2)}</span>
+								</div>
 							</CardContent>
+							<SelectSeparator className="mb-6" />
 							<CardFooter>
 								<Button
-									onClick={() => deleteFeedback(feedback._id)}
+									onClick={() => deleteFeedback(fare._id)}
 									variant="destructive"
 								>
 									Delete
@@ -111,4 +121,4 @@ const FeedbacksPage = () => {
 	}
 };
 
-export default FeedbacksPage;
+export default FareCalculationsPage;
